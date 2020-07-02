@@ -19,7 +19,7 @@ var createTask = function (taskText, taskDate, taskList) {
 
     //convert to moment object at 5:00pm 
     var time = moment(date, "L").set("hour", 17);
-    
+
     //remove any old classes from the element 
     $(taskEl).removeClass("list-group-item-warning list-group-item-danger");
 
@@ -27,9 +27,15 @@ var createTask = function (taskText, taskDate, taskList) {
     if (moment().isAfter(time)) {
       $(taskEl).addClass("list-group-item-danger");
     }
-    else if (Math.abs(moment().diff(tim, "days"))<= 2) {
+    else if (Math.abs(moment().diff(tim, "days")) <= 2) {
       $(taskEl).addClass("list-group-item-warning");
     }
+
+    setInterval(function () {
+      $(".card .list-group-item").each(function (el) {
+        auditTasks(el);
+      });
+    }, 1800000);
 
   };
 
@@ -156,7 +162,7 @@ $(".list-group").on("change", "input[type='text']", function () {
 
   //pass task's <li> element into auditTasks() to check new due date
   auditTasks($(taskSpan).closest(".list-group-item"));
-  
+
 });
 //end adding 
 
@@ -178,7 +184,7 @@ $("#task-form-modal").on("shown.bs.modal", function () {
 
 
 // save button in modal was clicked
-$("#task-form-modal .btn-primary").click(function () {
+$("#task-form-modal .btn-save").click(function () {
   // get form values
   var taskText = $("#modalTaskDescription").val();
   var taskDate = $("#modalDueDate").val();
@@ -216,16 +222,20 @@ $(".card .list-group").sortable({
   tolerance: "pointer",
   helper: "clone",
   activate: function (event) {
-    console.log("activate", this);
+    $("bottom-trash").addClass("dropover bottom-trash-drag");
+    //console.log("activate", this);
   },
   deactivate: function (event) {
-    console.log("deactivate", this);
+    $("bottom-trash").removeClass("dropover bottom-trash-drag");
+    //console.log("deactivate", this);
   },
   over: function (event) {
-    console.log("over", event.target);
+    $("bottom-trash").addClass("dropover-active bottom-trash-active");
+    //console.log("over", event.target);
   },
   out: function (event) {
-    console.log("out", event.target);
+    $("bottom-trash").removeClass("dropover-active bottom-trash-active");
+    //console.log("out", event.target);
   },
 
   update: function (event) {
